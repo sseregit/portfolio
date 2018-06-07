@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.iot.pf.dao.UserDAO">
+
+<select id="list" resultType="User" parameterType ="HashMap">
+
+ SELECT seq,user_id,user_name,nickname,email,is_admin,date_format(create_date,'%Y-%m-%d %H:%i:%s') AS create_date
+ 
+ FROM user 
+ 
+ WHERE 1=1
+ 
+ <if test="searchType != null and searchType == 'all' and searchType != '' ">
+ AND (user_id LIKE CONCAT('%',#{searchText},'%') OR user_name LIKE CONCAT('%',#{searchText},'%'))
+ </if>
+ <if test="searchType != null and searchType == 'userId' and searchType != '' ">
+ AND user_id LIKE CONCAT('%',#{searchText},'%')
+ </if>
+ <if test="searchType != null and searchType == 'userName' and searchType != '' ">
+ AND user_name LIKE CONCAT('%',#{searchText},'%')
+ </if>
+ ORDER BY ${sidx} ${sord} 
+ 
+ LIMIT ${start},${rows}
+
+</select>
+
+<select id="count" resultType = "int" parameterType = "HashMap">
+
+ SELECT count(*) 
+
+ FROM user
+
+ WHERE 1=1
+ 
+ <if test="searchType != null and searchType == 'all' and searchType != '' ">
+ AND (user_id LIKE CONCAT('%',#{searchText},'%') OR user_name LIKE CONCAT('%',#{searchText},'%'))
+ </if>
+ <if test="searchType != null and searchType == 'userId' and searchType != '' ">
+ AND user_id LIKE CONCAT('%',#{searchText},'%')
+ </if>
+ <if test="searchType != null and searchType == 'userName' and searchType != '' ">
+ AND user_name LIKE CONCAT('%',#{searchText},'%')
+ </if>
+ 
+</select>
+
+<insert id="insert" parameterType = "User">
+
+INSERT INTO user(user_id,user_name,user_pw,nickname,create_date)
+
+VALUES(#{userId}, #{userName}, sha2(md5(#{userPw}),256), #{nickName}, NOW());
+
+</insert>
+
+<delete id="delete" parameterType = "int">
+
+DELETE FROM user WHERE seq = #{seq}
+
+</delete>
+
+<update id = "update" parameterType = "User">
+
+UPDATE user SET user_name = #{userName},nickname = #{nickName} , email = #{email}, is_admin = #{isAdmin} WHERE seq = #{seq}
+
+</update>
+
+<select id ="chkId" resultType = "int" parameterType = "String">
+
+SELECT count(user_id) FROM user WHERE user_id = #{userId}
+
+</select>
+
+<select id="getUser" resultType = "User" parameterType = "String">
+
+SELECT * FROM user WHERE user_id = #{userId}
+
+</select>
+
+<select id ="password" resultType = "String" parameterType = "String">
+
+SELECT sha2(md5(#{password}),256)
+
+</select>
+
+</mapper>

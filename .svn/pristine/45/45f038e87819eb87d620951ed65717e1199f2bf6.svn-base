@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.iot.pf.dao.AttachmentDAO">
+
+<insert id="insert"  parameterType = "Attachment">
+
+INSERT INTO attachment 
+(attach_doc_type,attach_doc_seq,file_name,fake_name,file_size,content_type,create_date)
+VALUES 
+(#{attachDocType},#{attachDocSeq},#{fileName},#{fakeName},#{fileSize},#{contentType},NOW())
+
+</insert>
+
+<select id="getAttachment" resultType = "Attachment">
+
+SELECT * 
+FROM iot.attachment
+WHERE attach_doc_type = #{0}
+AND attach_doc_seq = #{1}
+
+</select>
+
+<select id="getAttach" resultType = "Attachment">
+
+SELECT * 
+FROM iot.attachment
+WHERE attach_seq = #{0}
+
+</select>
+
+<delete id="delete" parameterType = "int">
+
+delete from iot.attachment WHERE attach_seq = #{0}
+
+</delete>
+
+</mapper>

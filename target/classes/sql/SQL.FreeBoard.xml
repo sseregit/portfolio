@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.iot.pf.dao.FreeBoardDAO">
+
+<select id="list" resultType="HashMap" parameterType = "HashMap">
+
+ SELECT * FROM iot.free_board 
+ 
+ WHERE 1 = 1
+ 
+  <if test="(searchType != null and searchType == 'all') and searchType != ''">
+  AND (user_id LIKE CONCAT('%', #{searchText} ,'%') 
+  OR title LIKE CONCAT('%', #{searchText} ,'%')) 
+  </if>
+  
+ <if test="(searchType != null and searchType == 'userId') and searchType != ''">
+  AND user_id LIKE CONCAT('%', #{searchText} ,'%')
+  </if>
+  
+ <if test="(searchType != null and searchType == 'title') and searchType != ''">
+  AND title LIKE CONCAT('%', #{searchText} ,'%')
+ </if>
+ 
+ order by board_number desc 
+ 
+ Limit #{startArticleNo},#{pageArticleCnt};
+
+</select>
+
+<select id="count" resultType = "int" parameterType = "HashMap">
+
+ SELECT count(*) 
+
+ from free_board
+ 
+ WHERE 1 = 1
+ 
+  <if test="(searchType != null and searchType == 'all') and searchType != ''">
+  AND (user_id LIKE CONCAT('%', #{searchText} ,'%') 
+  OR title LIKE CONCAT('%', #{searchText} ,'%')) 
+  </if>
+ 
+ 
+ <if test="(searchType != null and searchType == 'userId') and searchType != ''">
+  AND user_id LIKE CONCAT('%', #{searchText} ,'%')
+  </if>
+
+ <if test="(searchType != null and searchType == 'title') and searchType != ''">
+  AND title LIKE CONCAT('%', #{searchText} ,'%')
+ </if>
+ 
+
+</select>
+
+<insert id = "write" parameterType ="FreeBoard" useGeneratedKeys="true">
+INSERT INTO free_board(user_id,name, title, content,has_file,reg_date)
+
+VALUES (#{userId},#{name},#{title},#{content},#{hasFile},NOW());
+
+ <selectKey resultType ="int" keyProperty="boardNumber" order ="AFTER">
+ SELECT LAST_INSERT_ID()
+ </selectKey>
+ 
+</insert>
+
+<delete id ="delete" parameterType ="int">
+
+DELETE from free_board where board_number = #{boardNumber};
+
+</delete>
+
+<update id ="update" parameterType ="FreeBoard">
+
+UPDATE free_board set title = #{title} , content = #{content} , has_file = #{hasFile} WHERE board_number = #{boardNumber};
+
+</update>
+
+<select id="findById" resultType = "FreeBoard" parameterType = "int">
+
+SELECT * FROM free_board WHERE board_number = #{boardNumber}
+
+</select>
+
+<update id="updatehits" parameterType = "int">
+
+update free_board set hits = hits + 1 WHERE board_number = #{boardNumber}
+
+</update>
+
+<select id ="chkId" resultType = "int" parameterType = "String">
+
+SELECT count(user_id) FROM user WHERE user_id = #{userId}
+
+</select>
+
+<select id="getUser" resultType = "User" parameterType = "String">
+
+SELECT * FROM user WHERE user_id = #{userId}
+
+</select>
+
+<select id ="password" resultType = "String" parameterType = "String">
+
+SELECT sha2(md5(#{password}),256)
+
+</select>
+
+</mapper>
