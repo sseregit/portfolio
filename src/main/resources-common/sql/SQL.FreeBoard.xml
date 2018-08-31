@@ -34,7 +34,7 @@ PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
 
  SELECT count(*) 
 
- from free_board
+ from iot.free_board
  
  WHERE 1 = 1
  

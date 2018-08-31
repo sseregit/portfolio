@@ -35,7 +35,7 @@ $(document).ready(function(){
 				<li>jUnit 4.12</li>
 			</ul>
 			<br/>
-			last update.... 2018. 04. 17
+			last update.... 2018. 08. 31
 		<table id="deptGrid"></table>
 		<div id="deptGrid-pager"></div>
 	</div>

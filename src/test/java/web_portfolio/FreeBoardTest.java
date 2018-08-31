@@ -29,7 +29,19 @@ public class FreeBoardTest {
 	
 	public void wrtie() {
 		
-		
+		for(int i = 0; i < 300; i++) {
+			
+			FreeBoard fb = new FreeBoard();
+			
+			fb.setUserId("테스트"+i);
+			fb.setName("테스트"+i);
+			fb.setTitle("페이징을위한 테스트"+i);
+			fb.setContent("페이징을 위한 테스트입니다.");
+			fb.setHasFile("0");
+			
+			fs.writeWithFile(fb, null);
+			
+		}
 		
 	}
 	
